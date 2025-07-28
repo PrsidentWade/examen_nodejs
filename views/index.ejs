@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Étudiants</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --navbar-height: 60px;
+            --primary-color: #667eea;
+            --primary-dark: #5a6fd8;
+            --sidebar-bg: #2c3e50;
+            --sidebar-hover: #34495e;
+        }
+
+        body {
+            background: #f8f9fa !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Navbar Styles */
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #764ba2 100%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            height: var(--navbar-height);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: white !important;
+        }
+
+        .navbar-text {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            width: var(--sidebar-width);
+            height: calc(100vh - var(--navbar-height));
+            background: var(--sidebar-bg);
+            color: white;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1025;
+            overflow-y: auto;
+        }
+
+        .sidebar.show {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-nav-link:hover {
+            background: var(--sidebar-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .sidebar-nav-link.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .sidebar-nav-link i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 0;
+            margin-top: var(--navbar-height);
+            padding: 2rem;
+            transition: margin-left 0.3s ease;
+            min-height: calc(100vh - var(--navbar-height));
+        }
+
+        .main-content.sidebar-open {
+            margin-left: var(--sidebar-width);
+        }
+
+        /* Sidebar Toggle Button */
+        .sidebar-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar-toggle:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Content Header */
+        .content-header {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Table Styles */
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            color: #495057;
+            background: #f8f9fa;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                transform: translateX(-100%);
+            }
+
+            .main-content.sidebar-open {
+                margin-left: 0;
+            }
+
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Overlay for mobile */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1020;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <button class="sidebar-toggle me-3" id="sidebarToggle">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-mortarboard-fill me-2"></i>
+                EduManager
+            </a>
+
+            <div class="ms-auto d-flex align-items-center">
+                <% if (!user) { %>
+                    <a href="/login" class="btn btn-outline-light">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>
+                        Connexion
+                    </a>
+                    <% } else { %>
+                        <span class="navbar-text me-3">
+                            <i class="bi bi-person-circle me-1"></i>
+                            <%= user.username %> (<%= user.role %>)
+                        </span>
+                        <a href="/logout" class="btn btn-outline-light">
+                            <i class="bi bi-box-arrow-right me-1"></i>
+                            Déconnexion
+                        </a>
+                        <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h5 class="mb-0">
+                <i class="bi bi-gear-fill me-2"></i>
+                Menu Principal
+            </h5>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="sidebar-nav-item">
+                <a href="/" class="sidebar-nav-link active">
+                    <i class="bi bi-house-fill"></i>
+                    <span>Tableau de bord</span>
+                </a>
+            </li>
+            <li class="sidebar-nav-item">
+                <a href="/" class="sidebar-nav-link">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Étudiants</span>
+                </a>
+            </li>
+            <% if (user && user.role==='admin' ) { %>
+                <li class="sidebar-nav-item">
+                    <a href="#" class="sidebar-nav-link">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        <span>Ajouter Étudiant</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="#" class="sidebar-nav-link">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        <span>Statistiques</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="#" class="sidebar-nav-link">
+                        <i class="bi bi-gear-fill"></i>
+                        <span>Paramètres</span>
+                    </a>
+                </li>
+                <% } %>
+                    <li class="sidebar-nav-item">
+                        <a href="#" class="sidebar-nav-link">
+                            <i class="bi bi-question-circle-fill"></i>
+                            <span>Aide</span>
+                        </a>
+                    </li>
+        </ul>
+    </div>
+
+    <!-- Overlay for mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+
+        <!-- Content Header -->
+        <div class="content-header">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div>
+                    <h1 class="fw-bold mb-1">🎓 Gestion des Étudiants</h1>
+                    <p class="text-muted mb-0">Gérez vos étudiants efficacement</p>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <div class="input-group" style="width: 300px;">
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" id="searchInput" class="form-control"
+                            placeholder="Rechercher par nom, matricule, filière...">
+                    </div>
+
+                    <% if (user && user.role==='admin' ) { %>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">
+                            <i class="bi bi-person-plus-fill"></i> Ajouter
+                        </button>
+                        <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="card border-0 bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <div class="small fw-bold">Total Étudiants</div>
+                                <div class="h5 mb-0">
+                                    <%= etudiants.length %>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <i class="bi bi-people-fill fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="card border-0 bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <div class="small fw-bold">Hommes</div>
+                                <div class="h5 mb-0">
+                                    <%= etudiants.filter(e=> e.sexe === 'Homme').length %>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <i class="bi bi-person-fill fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="card border-0 bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <div class="small fw-bold">Femmes</div>
+                                <div class="h5 mb-0">
+                                    <%= etudiants.filter(e=> e.sexe === 'Femme').length %>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <i class="bi bi-person-dress fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="card border-0 bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <div class="small fw-bold">Filières Uniques</div>
+                                <div class="h5 mb-0">
+                                    <%= [...new Set(etudiants.map(e=> e.filiere))].length %>
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <i class="bi bi-book-fill fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Table -->
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-table me-2"></i>
+                    Liste des Étudiants
+                </h5>
+            </div>
+            <div class="card-body p-0">
+
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Matricule</th>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Date Naissance</th>
+                            <th>Filière</th>
+                            <th>Université</th>
+                            <th>Sexe</th>
+                            <th>Nationalité</th>
+                            <% if (user && user.role==='admin' ) { %>
+                                <th class="text-center">Actions</th>
+                                <% } %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% etudiants.forEach(e=> { %>
+                            <tr>
+                                <td>
+                                    <%= e.matricule %>
+                                </td>
+                                <td>
+                                    <%= e.nom %>
+                                </td>
+                                <td>
+                                    <%= e.prenom %>
+                                </td>
+                                <td>
+                                    <%= e.datenaissance.toISOString().split('T')[0] %>
+                                </td>
+                                <td>
+                                    <%= e.filiere %>
+                                </td>
+                                <td>
+                                    <%= e.universite %>
+                                </td>
+                                <td>
+                                    <%= e.sexe %>
+                                </td>
+                                <td>
+                                    <%= e.nationalite %>
+                                </td>
+                                <% if (user && user.role==='admin' ) { %>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-warning btn-sm me-1" data-bs-toggle="modal"
+                                            data-bs-target="#editModal" data-id="<%= e.id %>"
+                                            data-matricule="<%= e.matricule %>" data-nom="<%= e.nom %>"
+                                            data-prenom="<%= e.prenom %>"
+                                            data-datenaissance="<%= e.datenaissance.toISOString().split('T')[0] %>"
+                                            data-filiere="<%= e.filiere || '' %>"
+                                            data-universite="<%= e.universite || '' %>"
+                                            data-adresse="<%= e.adresse || '' %>" data-sexe="<%= e.sexe %>"
+                                            data-nationalite="<%= e.nationalite || '' %>">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal" data-id="<%= e.id %>" data-nom="<%= e.nom %>"
+                                            data-prenom="<%= e.prenom %>" data-matricule="<%= e.matricule %>">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                    <% } %>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- MODALE Bootstrap  ajouter un etudiant-->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addModalLabel">Ajouter un étudiant</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/add" method="POST" class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Matricule</label>
+                            <input type="text" name="matricule" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nom</label>
+                            <input type="text" name="nom" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Prénom</label>
+                            <input type="text" name="prenom" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Date de naissance</label>
+                            <input type="date" name="datenaissance" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Filière</label>
+                            <input type="text" name="filiere" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Université</label>
+                            <input type="text" name="universite" class="form-control">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Adresse</label>
+                            <input type="text" name="adresse" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Sexe</label>
+                            <select name="sexe" class="form-select" required>
+                                <option value="">Sélectionner</option>
+                                <option value="Homme">Homme</option>
+                                <option value="Femme">Femme</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nationalité</label>
+                            <input type="text" name="nationalite" class="form-control">
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE MODIFICATION -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Modifier un étudiant</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm" method="POST" class="row g-3">
+                        <input type="hidden" id="editId" name="id">
+                        <div class="col-md-6">
+                            <label class="form-label">Matricule</label>
+                            <input type="text" id="editMatricule" name="matricule" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nom</label>
+                            <input type="text" id="editNom" name="nom" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Prénom</label>
+                            <input type="text" id="editPrenom" name="prenom" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Date de naissance</label>
+                            <input type="date" id="editDatenaissance" name="datenaissance" class="form-control"
+                                required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Filière</label>
+                            <input type="text" id="editFiliere" name="filiere" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Université</label>
+                            <input type="text" id="editUniversite" name="universite" class="form-control">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Adresse</label>
+                            <input type="text" id="editAdresse" name="adresse" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Sexe</label>
+                            <select id="editSexe" name="sexe" class="form-select" required>
+                                <option value="">Sélectionner</option>
+                                <option value="Homme">Homme</option>
+                                <option value="Femme">Femme</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nationalité</label>
+                            <input type="text" id="editNationalite" name="nationalite" class="form-control">
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Modifier</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE SUPPRESSION -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Confirmer la suppression
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-person-x-fill text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <h6 class="mb-3">Êtes-vous sûr de vouloir supprimer cet étudiant ?</h6>
+                    <div class="alert alert-warning">
+                        <strong>Étudiant :</strong> <span id="deleteStudentName"></span><br>
+                        <strong>Matricule :</strong> <span id="deleteStudentMatricule"></span>
+                    </div>
+                    <p class="text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Cette action est irréversible.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Annuler
+                    </button>
+                    <form id="deleteForm" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash-fill me-1"></i>
+                            Supprimer définitivement
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+<script>
+    const searchInput = document.getElementById("searchInput");
+    searchInput.addEventListener("keyup", function () {
+        const filter = searchInput.value.toLowerCase();
+        const rows = document.querySelectorAll("tbody tr");
+
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(filter) ? "" : "none";
+        });
+    });
+
+    // Écouter l'événement d'ouverture du modal de modification
+    document.getElementById('editModal').addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+
+        const id = button.getAttribute('data-id');
+        const matricule = button.getAttribute('data-matricule');
+        const nom = button.getAttribute('data-nom');
+        const prenom = button.getAttribute('data-prenom');
+        const datenaissance = button.getAttribute('data-datenaissance');
+        const filiere = button.getAttribute('data-filiere');
+        const universite = button.getAttribute('data-universite');
+        const adresse = button.getAttribute('data-adresse');
+        const sexe = button.getAttribute('data-sexe');
+        const nationalite = button.getAttribute('data-nationalite');
+
+        document.getElementById('editId').value = id;
+        document.getElementById('editMatricule').value = matricule;
+        document.getElementById('editNom').value = nom;
+        document.getElementById('editPrenom').value = prenom;
+        document.getElementById('editDatenaissance').value = datenaissance;
+        document.getElementById('editFiliere').value = filiere;
+        document.getElementById('editUniversite').value = universite;
+        document.getElementById('editAdresse').value = adresse;
+        document.getElementById('editSexe').value = sexe;
+        document.getElementById('editNationalite').value = nationalite;
+
+        // Mettre à jour l'action du formulaire
+        document.getElementById('editForm').action = `/edit/${id}`;
+    });
+
+    // Écouter l'événement d'ouverture du modal de suppression
+    document.getElementById('deleteModal').addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+
+        const id = button.getAttribute('data-id');
+        const nom = button.getAttribute('data-nom');
+        const prenom = button.getAttribute('data-prenom');
+        const matricule = button.getAttribute('data-matricule');
+
+        // Mettre à jour les informations dans le modal
+        document.getElementById('deleteStudentName').textContent = `${prenom} ${nom}`;
+        document.getElementById('deleteStudentMatricule').textContent = matricule;
+
+        // Mettre à jour l'action du formulaire de suppression
+        document.getElementById('deleteForm').action = `/delete/${id}`;
+    });
+
+    // Sidebar toggle functionality
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    function toggleSidebar() {
+        sidebar.classList.toggle('show');
+        mainContent.classList.toggle('sidebar-open');
+        sidebarOverlay.classList.toggle('show');
+    }
+
+    sidebarToggle.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click', toggleSidebar);
+
+    // Close sidebar when clicking on sidebar links (mobile)
+    document.querySelectorAll('.sidebar-nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        });
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('show');
+            mainContent.classList.remove('sidebar-open');
+            sidebarOverlay.classList.remove('show');
+        }
+    });
+</script>
+
+
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        <%= title %>
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <div class="container py-5">
+        <div class="card shadow mx-auto" style="max-width: 720px;">
+            <div class="card-body">
+                <h2 class="mb-4 text-center text-primary">
+                    <%= title %>
+                </h2>
+                <form action="<%= action %>" method="POST" class="row g-3">
+                    <% const e=etudiant; %>
+                        <div class="col-md-6">
+                            <label class="form-label">Matricule</label>
+                            <input type="text" name="matricule" class="form-control" value="<%= e.matricule || '' %>"
+                                required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nom</label>
+                            <input type="text" name="nom" class="form-control" value="<%= e.nom || '' %>" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Prénom</label>
+                            <input type="text" name="prenom" class="form-control" value="<%= e.prenom || '' %>"
+                                required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Date de naissance</label>
+                            <input type="date" name="datenaissance" class="form-control"
+                                value="<%= e.datenaissance ? e.datenaissance.toISOString().split('T')[0] : '' %>"
+                                required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Filière</label>
+                            <input type="text" name="filiere" class="form-control" value="<%= e.filiere || '' %>">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Université</label>
+                            <input type="text" name="universite" class="form-control" value="<%= e.universite || '' %>">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Adresse</label>
+                            <input type="text" name="adresse" class="form-control" value="<%= e.adresse || '' %>">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Sexe</label>
+                            <select name="sexe" class="form-select" required>
+                                <option value="">Sélectionner</option>
+                                <option value="Homme" <%=e.sexe==='Homme' ? 'selected' : '' %>>Homme</option>
+                                <option value="Femme" <%=e.sexe==='Femme' ? 'selected' : '' %>>Femme</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nationalité</label>
+                            <input type="text" name="nationalite" class="form-control"
+                                value="<%= e.nationalite || '' %>">
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="/" class="btn btn-secondary">Retour</a>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

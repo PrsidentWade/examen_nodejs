@@ -1,0 +1,31 @@
+
+Ce projet est une application web de gestion des étudiants réalisée avec Express.js, EJS pour le rendu des vues, PostgreSQL pour la base de données, et bcrypt pour la gestion sécurisée des mots de passe. Voici une explication du fonctionnement général et du code principal :
+
+Fonctionnalités principales
+Inscription et connexion : Les utilisateurs peuvent s’inscrire et se connecter. Les mots de passe sont hashés avec bcrypt.
+Gestion des sessions : Utilisation de express-session pour maintenir la connexion des utilisateurs.
+Rôles : Deux rôles sont gérés (admin et utilisateur simple). Les administrateurs peuvent ajouter, modifier et supprimer des étudiants.
+CRUD étudiants : Les administrateurs peuvent créer, lire, mettre à jour et supprimer des étudiants.
+Statistiques : Affichage de statistiques sur les étudiants (ex : nombre par sexe).
+Sécurité : Les routes sensibles sont protégées par des middlewares d’authentification et de vérification du rôle.
+Explication du code
+Configuration : Initialisation d’Express, configuration du moteur de vues EJS, gestion des fichiers statiques et des sessions.
+Middlewares :
+isAuthenticated : Vérifie si l’utilisateur est connecté.
+isAdmin : Vérifie si l’utilisateur connecté est un administrateur.
+Routes :
+/register : Affiche le formulaire d’inscription et traite l’inscription.
+/login : Affiche le formulaire de connexion et traite la connexion.
+/logout : Déconnecte l’utilisateur.
+/ : Page d’accueil affichant la liste des étudiants et des statistiques.
+/add, /edit/:id, /delete/:id : Routes pour ajouter, modifier et supprimer des étudiants (admin uniquement).
+Exemple de flux
+Un utilisateur s’inscrit via /register.
+Il se connecte via /login.
+S’il est admin, il peut accéder aux routes d’ajout, modification et suppression d’étudiants.
+Tous les utilisateurs connectés peuvent voir la liste des étudiants.
+Sécurité
+Les mots de passe sont hashés avant stockage.
+Les routes critiques sont protégées par des middlewares.
+Les sessions sont utilisées pour maintenir l’état de connexion.
+Ce projet est donc une base solide pour une gestion d’étudiants avec contrôle d’accès et interface web simple.

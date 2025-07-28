@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-container {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            min-height: 500px;
+        }
+
+        .login-image {
+            flex: 1;
+            background: linear-gradient(rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8)),
+                url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .login-form {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .welcome-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .form-control {
+            border: none;
+            border-bottom: 2px solid #e0e0e0;
+            border-radius: 0;
+            padding: 15px 0;
+            background: transparent;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-bottom-color: #667eea;
+            box-shadow: none;
+            background: transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+
+        @media (max-width: 768px) {
+            .login-card {
+                flex-direction: column;
+                margin: 20px;
+            }
+
+            .login-image {
+                min-height: 200px;
+                flex: none;
+            }
+
+            .welcome-text {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Section image -->
+            <div class="login-image">
+                <div>
+                    <div class="welcome-text">🎓</div>
+                    <div class="welcome-text">Bienvenue</div>
+                    <p class="welcome-subtitle">
+                        Accédez à votre plateforme de gestion des étudiants.<br>
+                        Connectez-vous pour continuer votre parcours éducatif.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Section formulaire -->
+            <div class="login-form">
+                <% if (error) { %>
+                    <div class="alert alert-danger">
+                        <%= error %>
+                    </div>
+                    <% } %>
+
+                        <h2 class="text-center mb-4" style="color: #333; font-weight: 600;">Connexion</h2>
+
+                        <form action="/login" method="POST">
+                            <div class="mb-4">
+                                <input name="username" placeholder="Nom d'utilisateur" class="form-control" required>
+                            </div>
+                            <div class="mb-4">
+                                <input type="password" name="password" placeholder="Mot de passe" class="form-control"
+                                    required>
+                            </div>
+                            <div class="d-grid mb-4">
+                                <button class="btn btn-primary">Se connecter</button>
+                            </div>
+                        </form>
+
+                        <p class="text-center" style="color: #666;">
+                            Pas encore inscrit ? <a href="/register"
+                                style="color: #667eea; text-decoration: none; font-weight: 600;">S'inscrire</a>
+                        </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
