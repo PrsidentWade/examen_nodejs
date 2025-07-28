@@ -1,16 +1,16 @@
-# 🎓 Application Web de Gestion des Étudiants
+###### 🎓 Application Web de Gestion des Étudiants
 
 Bienvenue dans ce projet de gestion des étudiants développé avec **Express.js**, **EJS**, **PostgreSQL** et **bcrypt**. Cette application permet aux administrateurs de gérer les étudiants à travers une interface web simple et sécurisée.
 
 ---
 
-## 🚀 Fonctionnalités Principales
+### 🚀 Fonctionnalités Principales
 
-- ✅ **Inscription & Connexion**
+##- ✅ **Inscription & Connexion**
   - Création de compte et connexion utilisateur
   - Hachage sécurisé des mots de passe avec `bcrypt`
 
-- 🔐 **Gestion des Sessions**
+##- 🔐 **Gestion des Sessions**
   - Maintien de la session avec `express-session`
 
 - 🛂 **Gestion des Rôles**
@@ -18,31 +18,31 @@ Bienvenue dans ce projet de gestion des étudiants développé avec **Express.js
     - **Administrateur** : Accès complet (CRUD)
     - **Utilisateur simple** : Accès en lecture seule
 
-- 👨‍🎓 **CRUD Étudiants**
+##- 👨‍🎓 **CRUD Étudiants**
   - Ajouter, modifier, supprimer et consulter les étudiants (admin uniquement)
 
-- 📊 **Statistiques**
+##- 📊 **Statistiques**
   - Visualisation des statistiques (ex : nombre d’étudiants par sexe)
 
-- 🛡️ **Sécurité**
+##- 🛡️ **Sécurité**
   - Protection des routes avec des middlewares (`isAuthenticated`, `isAdmin`)
 
 ---
 
-## 🧩 Architecture et Fonctionnement
+##### 🧩 Architecture et Fonctionnement
 
-### ⚙️ Configuration
+#### ⚙️ Configuration
 - Initialisation du serveur Express
 - Configuration du moteur de vues **EJS**
 - Déclaration des fichiers statiques
 - Configuration de `express-session` pour gérer les sessions
 
-### 🧱 Middlewares
+##### 🧱 Middlewares
 
 - `isAuthenticated` : vérifie si l'utilisateur est connecté
 - `isAdmin` : vérifie si l'utilisateur est un administrateur
 
-### 🗺️ Routes
+#### 🗺️ Routes
 
 | Méthode | Route             | Description                                          | Accès       |
 |---------|-------------------|------------------------------------------------------|-------------|
@@ -60,7 +60,7 @@ Bienvenue dans ce projet de gestion des étudiants développé avec **Express.js
 
 ---
 
-## 🔁 Exemple de Scénario Utilisateur
+### 🔁 Exemple de Scénario Utilisateur
 
 1. 📝 L'utilisateur s'inscrit via `/register`
 2. 🔐 Il se connecte via `/login`
@@ -69,7 +69,7 @@ Bienvenue dans ce projet de gestion des étudiants développé avec **Express.js
 
 ---
 
-## 🧪 Sécurité Intégrée
+#### 🧪 Sécurité Intégrée
 
 - 🔒 Mots de passe hachés avec `bcrypt`
 - 🔐 Routes critiques protégées par des middlewares personnalisés
@@ -77,7 +77,7 @@ Bienvenue dans ce projet de gestion des étudiants développé avec **Express.js
 
 ---
 
-## 🛠️ Technologies Utilisées
+##### 🛠️ Technologies Utilisées
 
 | Outil / Lib        | Rôle                                 |
 |--------------------|--------------------------------------|
@@ -89,12 +89,12 @@ Bienvenue dans ce projet de gestion des étudiants développé avec **Express.js
 
 ---
 
-## 📌 Conclusion
+##### 📌 Conclusion
 
 Ce projet constitue une base complète et évolutive pour toute application de gestion avec rôles, sécurité et statistiques. N'hésitez pas à forker, contribuer ou adapter à vos besoins !
 
 
-## 📦 Installation (optionnel)
+#### 📦 Installation (optionnel)
 
 ```bash
 git clone (projet)
