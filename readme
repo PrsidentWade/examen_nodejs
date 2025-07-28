@@ -1,4 +1,4 @@
-###### 🎓 Application Web de Gestion des Étudiants
+# 🎓 Application Web de Gestion des Étudiants
 
 Bienvenue dans ce projet de gestion des étudiants développé avec **Express.js**, **EJS**, **PostgreSQL** et **bcrypt**. Cette application permet aux administrateurs de gérer les étudiants à travers une interface web simple et sécurisée.
 
