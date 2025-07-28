@@ -97,7 +97,7 @@ Ce projet constitue une base complète et évolutive pour toute application de g
 ## 📦 Installation (optionnel)
 
 ```bash
-git clone https://github.com/votre-utilisateur/votre-projet.git
+git clone (projet)
 cd votre-projet
 npm init
 npm install express pg ejs body-parser dotenv
